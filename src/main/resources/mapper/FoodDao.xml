@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.FoodDao">
+
+    <resultMap id="BaseResultMap" type="com.example.demo.entity.Food">
+        <!--@Table food-->
+        <result property="foodid" column="foodId" jdbcType="INTEGER"/>
+        <result property="foodname" column="foodName" jdbcType="VARCHAR"/>
+        <result property="foodnumber" column="foodNumber" jdbcType="INTEGER"/>
+        <result property="foodtype" column="foodType" jdbcType="VARCHAR"/>
+        <result property="foodcreatetime" column="foodCreateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          foodId, foodName, foodNumber, foodType, foodCreateTime
+        from bookfood.food
+        where foodId = #{foodid}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+          foodId, foodName, foodNumber, foodType, foodCreateTime
+        from bookfood.food
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+          foodId, foodName, foodNumber, foodType, foodCreateTime
+        from bookfood.food
+        <where>
+            <if test="foodid != null">
+                and foodId = #{foodid}
+            </if>
+            <if test="foodname != null and foodname != ''">
+                and foodName = #{foodname}
+            </if>
+            <if test="foodnumber != null">
+                and foodNumber = #{foodnumber}
+            </if>
+            <if test="foodtype != null and foodtype != ''">
+                and foodType = #{foodtype}
+            </if>
+            <if test="foodcreatetime != null">
+                and foodCreateTime = #{foodcreatetime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="foodid" useGeneratedKeys="true">
+        insert into bookfood.food(foodName, foodNumber, foodType, foodCreateTime)
+        values (#{foodname}, #{foodnumber}, #{foodtype}, #{foodcreatetime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update bookfood.food
+        <set>
+            <if test="foodname != null and foodname != ''">
+                foodName = #{foodname},
+            </if>
+            <if test="foodnumber != null">
+                foodNumber = #{foodnumber},
+            </if>
+            <if test="foodtype != null and foodtype != ''">
+                foodType = #{foodtype},
+            </if>
+            <if test="foodcreatetime != null">
+                foodCreateTime = #{foodcreatetime},
+            </if>
+        </set>
+        where foodId = #{foodid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from bookfood.food where foodId = #{foodid}
+    </delete>
+
+</mapper>
